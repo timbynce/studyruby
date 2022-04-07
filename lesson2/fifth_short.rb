@@ -1,9 +1,9 @@
 require 'date'
 
 def leap_year (y)
-    if (y % 4 == 0 && year % 100 != 0) || (y % 400 == 0)
-        return true
-    end
+  if (y % 4 == 0 && year % 100 != 0) || (y % 400 == 0)
+    return true
+  end
 end
 
 puts "Set year"

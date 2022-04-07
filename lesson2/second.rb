@@ -1,6 +1,2 @@
-arr_numbers = []
-10.step(100,5) do |i|
-    arr_numbers.push(i)
-    i += 5
-end
+arr_numbers = 10.step(100,5).to_a
 puts arr_numbers
