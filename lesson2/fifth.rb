@@ -18,7 +18,6 @@ num_day = 0
 if leap_year(in_year) == true
     calendar[2] = 29
 end
-
 if (calendar[in_month] < in_day)
     puts "Your date is wrong"
 else
@@ -29,6 +28,5 @@ else
             num_day += calendar[i]
         end
     end
-
     puts "Today is #{num_day}th day of the year"
 end
