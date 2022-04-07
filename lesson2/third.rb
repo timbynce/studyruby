@@ -6,8 +6,8 @@ def fibonacci(n)
     arr.push(before)
     after, before = before, after + before
   end
-  return arr
+  arr
 end
 
-arr_fib = fibonacci(100)
-puts arr_fib
+puts fibonacci(100)
+

@@ -20,11 +20,11 @@ if (calendar[in_month] < in_day)
   puts "Your date is wrong"
 else
   (1..in_month).each do |i|
-    if i == in_month
-      num_day += in_day 
-    else     
-      num_day += calendar[i]
-    end
+    num_day += if i == in_month
+                 in_day
+               else
+                 calendar[i]
+               end   
 end
   puts "Today is #{num_day}th day of the year"
 end
