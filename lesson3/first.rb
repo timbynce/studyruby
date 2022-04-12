@@ -18,15 +18,16 @@ class Station
     @list_trains.select { |train| train.type =~ /#{type}/ }
   end
   
+  def sum_trains(type)
+    filter_trains(type).length
+  end
 end
 
 class Route  
-  attr_reader :list_stations, :start_station, :end_station
+  attr_reader :list_stations
 
-  def initialize(start_station, end_station)
-    @start_station = start_station
-    @end_station = end_station 
-    @list_stations = [@start_station, @end_station] 
+  def initialize(start_station, end_station)   
+    @list_stations = [start_station, end_station] 
   end
 
   def add_station(station, index = -2)    
@@ -38,12 +39,12 @@ class Route
   end
    
   def next_station_for(station)
-   return "It's end station" unless @list_stations[-1] != station
+   return unless @list_stations[-1] != station
    @list_stations[index_station_for(station) + 1]
   end
   
   def prev_station_for(station)
-    return "It's first station" unless @list_stations[0] != station
+    return unless @list_stations[0] != station
     @list_stations[index_station_for(station) - 1]
   end
   
@@ -90,30 +91,32 @@ class Train
 
   def set_route(route)
     @route = route
-    @current_station = route.list_stations[0]
-    @next_station = route.next_station_for(@current_station)
+    @current_station = route.list_stations[0]    
     @current_station.arrival_train(self)
+    check_stations(@current_station) 
   end
 
   def move_forward
-    return "It's dead end" unless @next_station != "It's end station"
+    return puts "It's dead end" unless @next_station
     @current_station.departure_train(self)
-    @next_station = route.next_station_for(@current_station)
-    @prev_station = @current_station
-    @current_station = @next_station
+    check_stations(@next_station)    
     @current_station.arrival_train(self)
   end
 
   def move_down   
-    return "It's dead end" unless @prev_station != "It's first station"
+    return puts "It's dead end" unless @prev_station
     @current_station.departure_train(self)
-    @next_station = @current_station
-    @prev_station = route.prev_station_for(@current_station)
-    @current_station = @prev_station
+    check_stations(@prev_station)  
     @current_station.arrival_train(self)
   end
   
   private
+
+  def check_stations(station)
+    @current_station = station
+    @next_station = route.next_station_for(station)
+    @prev_station = route.prev_station_for(station)
+  end
 
   def validate      
     raise "Type missmatch" unless TYPES.include?(type) 
@@ -126,10 +129,8 @@ end
 station_1 = Station.new
 station_2 = Station.new("Moscow")
 station_3 = Station.new("Prague")
-
 route = Route.new(station_1, station_2)
 route.add_station(station_3,1)
-
 train_1 = Train.new
 train_2 = Train.new("123","cargo")
 train_1.accelerate(30)
@@ -138,6 +139,6 @@ train_1.add_carriage
 puts train_1.carriage
 train_1.set_route(route)
 train_2.set_route(route)
-
+train_1.move_forward
 train_1.move_forward
 train_1.move_forward
