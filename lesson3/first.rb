@@ -90,6 +90,7 @@ class Train
   end
 
   def set_route(route)
+    current_station.departure_train(self) if @current_station
     @route = route
     @current_station = route.list_stations[0]    
     @current_station.arrival_train(self)
