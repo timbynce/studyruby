@@ -136,7 +136,6 @@ train_2 = Train.new("123","cargo")
 train_1.accelerate(30)
 train_1.slowdown(20)
 train_1.add_carriage
-puts train_1.carriage
 train_1.set_route(route)
 train_2.set_route(route)
 train_1.move_forward
