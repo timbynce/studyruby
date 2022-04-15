@@ -1,8 +1,16 @@
 class Wagon
-  attr_reader :id, :type
+  attr_reader :id
   
   def initialize
     @id = rand(1..1000)
+  end
+
+  def cargo?
+    false
+  end
+
+  def passenger?
+    false
   end
   
   end
@@ -15,6 +23,10 @@ class Wagon
       @type = "passenger"
       @seats = 100
     end
+
+    def passenger?
+      true
+    end
   end
   
   class CargoWagon < Wagon
@@ -24,6 +36,10 @@ class Wagon
       super
       @type = "cargo"
       @volume = 100
+    end
+
+    def cargo?
+      true
     end
   end
   

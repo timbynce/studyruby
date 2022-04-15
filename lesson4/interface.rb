@@ -167,8 +167,8 @@ class Railway
        train_by_num(tr_num).add_carriage(cargo_wagon)
      end
    else  
-     return puts "Wagon doesn't exist" unless wagon_by_id(wagon_id)
-     train_by_num(tr_num).add_wagon(wagon_by_id(wagon_id))
+     return puts "Wagon doesn't exist" unless wagon_by_id(wagon_id.to_i)
+     train_by_num(tr_num).add_carriage(wagon_by_id(wagon_id.to_i))
    end
  end
  

@@ -72,7 +72,7 @@ class PassTrain < Train
   end
 
   def add_carriage(wagon)
-    return puts "You can add only passenger wagon!" unless wagon.type == "passenger"
+    return puts "You can add only passenger wagon!" unless wagon.passenger? == true
     super
   end
 
@@ -87,7 +87,7 @@ class CargoTrain < Train
   end
 
   def add_carriage(wagon)
-    return puts "You can add only cargo wagon!" unless wagon.type == "cargo"
+    return puts "You can add only cargo wagon!" unless wagon.cargo? == true
     super
   end
 
