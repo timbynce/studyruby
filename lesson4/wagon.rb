@@ -1,5 +1,5 @@
 class Wagon
-  attr_reader :id
+  attr_reader :id, :type
   
   def initialize
     @id = rand(1..1000)
@@ -7,7 +7,7 @@ class Wagon
   
   end
   
-  class Pass_Wagon < Wagon
+  class PassWagon < Wagon
     attr_reader :type, :seats
   
     def initialize
@@ -17,7 +17,7 @@ class Wagon
     end
   end
   
-  class Cargo_Wagon < Wagon
+  class CargoWagon < Wagon
     attr_reader :type, :volume
   
     def initialize

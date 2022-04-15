@@ -63,7 +63,7 @@ protected
   
 end
 
-class Pass_Train < Train
+class PassTrain < Train
   attr_reader :type
 
   def initialize(num = "#{rand(1..1000)}")
@@ -78,7 +78,7 @@ class Pass_Train < Train
 
 end
 
-class Cargo_Train < Train
+class CargoTrain < Train
   attr_reader :type
 
   def initialize(num = "#{rand(1..1000)}")
