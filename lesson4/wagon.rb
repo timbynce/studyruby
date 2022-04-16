@@ -1,45 +1,29 @@
 class Wagon
-  attr_reader :id
+  attr_reader :id, :type
   
   def initialize
+    @type = "default"
     @id = rand(1..1000)
   end
-
-  def cargo?
-    false
-  end
-
-  def passenger?
-    false
-  end
-  
-  end
+end
   
   class PassWagon < Wagon
-    attr_reader :type, :seats
+    attr_reader :seats
   
     def initialize
       super
       @type = "passenger"
       @seats = 100
     end
-
-    def passenger?
-      true
-    end
   end
   
   class CargoWagon < Wagon
-    attr_reader :type, :volume
+    attr_reader :volume
   
     def initialize
       super
       @type = "cargo"
       @volume = 100
-    end
-
-    def cargo?
-      true
     end
   end
   

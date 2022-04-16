@@ -10,6 +10,7 @@ class Train
 
   def add_carriage(wagon)
     return puts "You most stop before change it!" unless @speed == 0
+    return puts "Wrong type of wagon!" unless wagon.type == @type
     
     @carriage << wagon
   end
@@ -70,12 +71,6 @@ class PassTrain < Train
     super
     @type = "passenger"
   end
-
-  def add_carriage(wagon)
-    return puts "You can add only passenger wagon!" unless wagon.passenger? == true
-    super
-  end
-
 end
 
 class CargoTrain < Train
@@ -85,10 +80,4 @@ class CargoTrain < Train
     super
     @type = "cargo"
   end
-
-  def add_carriage(wagon)
-    return puts "You can add only cargo wagon!" unless wagon.cargo? == true
-    super
-  end
-
 end
