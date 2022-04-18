@@ -1,3 +1,5 @@
+require_relative "instancecounter"
+require_relative "manufactured"
 require_relative "station"
 require_relative "wagon"
 require_relative "route"

@@ -81,7 +81,7 @@ class Railway
  def create_station
    puts "Put the name of station:"
    name = gets.chomp
-   @stations << Station.new(name)  
+   Station.new(name)  
  end
  
  def create_train
@@ -90,9 +90,9 @@ class Railway
    puts "Put the number of a train:"
    number = gets.chomp
    if type == "passenger"
-     @trains << PassTrain.new(number)    
+    PassTrain.new(number)    
    elsif type == "cargo"
-     @trains << CargoTrain.new(number)    
+    CargoTrain.new(number)    
    else
      puts "Wrong train type"
    end
@@ -142,63 +142,63 @@ class Railway
  def set_route
    puts "Put the train number"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless train_by_num(tr_num)
+   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
    puts "Put index of route"
    route_index = gets.chomp.to_i
    return puts "Route doesn't exist" unless @routes[route_index] != nil
-   train_by_num(tr_num).set_route(@routes[route_index])
+   Train.find_by_num(tr_num).set_route(@routes[route_index])
  end
  
  def add_wagon
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless train_by_num(tr_num)
+   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
    puts "Put id of wagon or RAND if you want to create random wagon"
    wagon_id = gets.chomp
    if wagon_id == "RAND"
      case
-     when train_by_num(tr_num).type == "passenger"
+     when Train.find_by_num(tr_num).type == "passenger"
        pass_wagon = PassWagon.new
        @wagons << pass_wagon
-       train_by_num(tr_num).add_carriage(pass_wagon)
-     when train_by_num(tr_num).type == "cargo"
+       Train.find_by_num(tr_num).add_carriage(pass_wagon)
+     when Train.find_by_num(tr_num).type == "cargo"
        cargo_wagon = CargoWagon.new
        @wagons << cargo_wagon
-       train_by_num(tr_num).add_carriage(cargo_wagon)
+       Train.find_by_num(tr_num).add_carriage(cargo_wagon)
      end
    else  
      return puts "Wagon doesn't exist" unless wagon_by_id(wagon_id.to_i)
-     train_by_num(tr_num).add_carriage(wagon_by_id(wagon_id.to_i))
+     Train.find_by_num(tr_num).add_carriage(wagon_by_id(wagon_id.to_i))
    end
  end
  
  def remove_wagon
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless train_by_num(tr_num)
+   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
    puts "Put id of wagon for remove"
    wagon_id = gets.chomp.to_i
    return puts "Wagon doesn't exist" unless wagon_by_id(wagon_id)
-   train_by_num(tr_num).remove_carriage(wagon_by_id(wagon_id))
+   Train.find_by_num(tr_num).remove_carriage(wagon_by_id(wagon_id))
  end
  
  def move_forward
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless train_by_num(tr_num)
-   train_by_num(tr_num).move_forward
+   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   Train.find_by_num(tr_num).move_forward
  end
  
  def move_down
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless train_by_num(tr_num)
-   train_by_num(tr_num).move_down
+   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   Train.find_by_num(tr_num).move_down
  end
  
  def list_stations
    puts "List of all stations:"
-   @stations.each{|st| puts st.name }
+   Station.list_all{|st| puts st.name }
  end
  
  def list_route
@@ -222,7 +222,7 @@ class Railway
  def list_wagons
    puts "Put train num"
    tr_num = gets.chomp
-   wagons = train_by_num(tr_num).carriage
+   wagons = Train.find_by_num(tr_num).carriage
    wagons.each{|wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}"}
  end
  
@@ -230,11 +230,7 @@ class Railway
  def station_by_name(st_name)
    @stations.find{|st| st.name == st_name}
  end
- 
- def train_by_num(tr_num)
-   @trains.find{|tr| tr.num == tr_num}
- end
- 
+
  def wagon_by_id(wagon_id)
    @wagons.find{|wagon| wagon.id == wagon_id}
  end

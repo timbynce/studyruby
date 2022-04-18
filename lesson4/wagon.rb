@@ -1,9 +1,12 @@
 class Wagon
+  include Manufactured
+
   attr_reader :id, :type
   
   def initialize
     @type = "default"
     @id = rand(1..1000)
+    self.manufactured = "default corp"
   end
 end
   
@@ -26,4 +29,3 @@ end
       @volume = 100
     end
   end
-  

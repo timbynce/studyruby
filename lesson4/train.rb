@@ -1,12 +1,20 @@
 class Train    
+  include Manufactured
+  include InstanceCounter
   attr_reader :speed, :carriage, :num, :route, :current_station, :next_station, :prev_station
-  
+  @@all_trains = {}
   def initialize(num = "#{rand(1..1000)}")
     @num = num 
     @carriage = []
     @speed = 0
-   
+    @@all_trains[num] = self 
+    
   end
+
+  def self.find_by_num(num)
+    @@all_trains[num]
+  end
+
 
   def add_carriage(wagon)
     return puts "You most stop before change it!" unless @speed == 0
@@ -70,6 +78,7 @@ class PassTrain < Train
   def initialize(num = "#{rand(1..1000)}")
     super
     @type = "passenger"
+    register_instance
   end
 end
 
@@ -78,6 +87,7 @@ class CargoTrain < Train
 
   def initialize(num = "#{rand(1..1000)}")
     super
-    @type = "cargo"
+    @type = "cargo"  
+    register_instance  
   end
 end

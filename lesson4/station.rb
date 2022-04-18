@@ -1,9 +1,17 @@
 class Station
+  include InstanceCounter
   attr_reader :name, :list_trains
+  @@all_stations = []
+  
+  def self.list_all
+    @@all_stations
+  end
     
   def initialize(name = "Station #{rand(1..1000)}")
     @list_trains = []
     @name = name  
+    @@all_stations << self
+    register_instance
   end
   
   def arrival_train(train)
