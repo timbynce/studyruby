@@ -2,13 +2,21 @@ class Train
   include Manufactured
   include InstanceCounter
   attr_reader :speed, :carriage, :num, :route, :current_station, :next_station, :prev_station
+  FORMAT = /[a-zA-Z0-9]{3}[-]?[a-zA-Z0-9]{2}$/
   @@all_trains = {}
   def initialize(num = "#{rand(1..1000)}")
-    @num = num 
+    @num = num
+    validate! 
     @carriage = []
     @speed = 0
-    @@all_trains[num] = self 
-    
+    @@all_trains[num] = self     
+  end
+
+  def valid?
+      validate!
+      true
+    rescue
+      false
   end
 
   def self.find_by_num(num)
@@ -69,6 +77,11 @@ protected
     @next_station = route.next_station_for(station)
     @prev_station = route.prev_station_for(station)
   end
+
+ def validate!
+  raise "Number must be 5 symbols" if num.length < 5
+  raise "Number has invalid foramt" if num !~ FORMAT
+ end
   
 end
 

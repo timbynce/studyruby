@@ -81,78 +81,93 @@ class Railway
  def create_station
    puts "Put the name of station:"
    name = gets.chomp
-   Station.new(name)  
- end
- 
- def create_train
-   puts "Put the type of a train (passenger or cargo):"
-   type = gets.chomp
-   puts "Put the number of a train:"
-   number = gets.chomp
-   if type == "passenger"
-    PassTrain.new(number)    
-   elsif type == "cargo"
-    CargoTrain.new(number)    
-   else
-     puts "Wrong train type"
-   end
+   Station.new(name)
+   rescue
+    puts "You must type NAME of the station"
+    retry
+  
  end
  
  def create_route
    puts "Put the name of first station"
    first_station = gets.chomp
    puts "Put the name of end station"
-   end_station = gets.chomp
-   @routes << Route.new(station_by_name(first_station),station_by_name(end_station))
+   end_station = gets.chomp   
+   route = Route.new(station_by_name(first_station),station_by_name(end_station))
+   @routes << route
+   rescue StandardError => e
+    puts "Error. Put real stations"
+    retry
  end
  
  def add_station
    puts "Put index of route"
-   route_index = gets.chomp.to_i  
-   return puts "Wrong index" unless route_index >=0 && route_index <= @routes.length
+   route_index = gets.chomp.to_i
    route = @routes[route_index]
+   exist_route(route)
    puts "Put the number of added station"
    number_station = gets.chomp.to_i
    puts "Put the Station Name"
    station_name = gets.chomp
    station = station_by_name(station_name)
-   return puts "Station doesn't exist" unless station
-   return puts "Index cann't be negaive" unless number_station.positive?
-   return puts "Station already added to this route" unless route.index_station_for(station) == nil
+   exist_station(station)
    if number_station > route.list_stations.length
-     puts "Route have only #{route.list_stations.length} stations, so it will added as last!"
      number_station = route.list_stations.length + 1
    end
    route.add_station(station, number_station)
+   rescue
+    puts "Wrong params. Try again!"
+    retry
  end
  
  def remove_station
    puts "Put index of route"
    route_index = gets.chomp.to_i
-   return puts "Wrong index" unless route_index >=0 && route_index <= @routes.length
    route = @routes[route_index]
+   exist_route(route)
    puts "Put removed station name"
    station_name = gets.chomp
    station = station_by_name(station_name) 
-   return puts "Station doesn't exist" unless station  
+   exist_station(station)
    return puts "Station doesn't added to this route" unless route.index_station_for(station) != nil
    route.remove_station(station)
  end
+  
+ def create_train
+  puts "Put the type of a train (passenger or cargo):"
+  type = gets.chomp
+  puts "Put the number of a train:"
+  number = gets.chomp
+  if type == "passenger"
+    PassTrain.new(number)
+    puts "Train #{number} was created!"    
+  elsif type == "cargo"
+    CargoTrain.new(number)
+    puts "Train #{number} was created!"    
+  else
+    puts "Wrong train type"
+  end
+  rescue 
+    puts "Wrong number format"
+end
  
  def set_route
    puts "Put the train number"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   exist_train(Train.find_by_num(tr_num))
    puts "Put index of route"
    route_index = gets.chomp.to_i
-   return puts "Route doesn't exist" unless @routes[route_index] != nil
+   exist_route(@routes[route_index])
    Train.find_by_num(tr_num).set_route(@routes[route_index])
+   rescue
+    puts "Wrong params. Try again!"
+    retry
  end
  
  def add_wagon
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   exist_train(Train.find_by_num(tr_num))
    puts "Put id of wagon or RAND if you want to create random wagon"
    wagon_id = gets.chomp
    if wagon_id == "RAND"
@@ -166,8 +181,8 @@ class Railway
        @wagons << cargo_wagon
        Train.find_by_num(tr_num).add_carriage(cargo_wagon)
      end
-   else  
-     return puts "Wagon doesn't exist" unless wagon_by_id(wagon_id.to_i)
+   else
+     exist_wagon(wagon_by_id(wagon_id.to_i))     
      Train.find_by_num(tr_num).add_carriage(wagon_by_id(wagon_id.to_i))
    end
  end
@@ -175,30 +190,38 @@ class Railway
  def remove_wagon
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   exist_train(Train.find_by_num(tr_num))
    puts "Put id of wagon for remove"
    wagon_id = gets.chomp.to_i
-   return puts "Wagon doesn't exist" unless wagon_by_id(wagon_id)
+   exist_wagon(wagon_by_id(wagon_id))
    Train.find_by_num(tr_num).remove_carriage(wagon_by_id(wagon_id))
+   rescue
+    puts "Wrong params. Try again!"
+    retry
  end
  
  def move_forward
    puts "Put number of train"
    tr_num = gets.chomp
-   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   exist_train(Train.find_by_num(tr_num))  
    Train.find_by_num(tr_num).move_forward
+   rescue
+    puts "Train doesn't exist!"
  end
  
  def move_down
    puts "Put number of train"
-   tr_num = gets.chomp
-   return puts "Train doesn't exist" unless Train.find_by_num(tr_num)
+   tr_num = gets.chomp   
+   exist_train(Train.find_by_num(tr_num))
    Train.find_by_num(tr_num).move_down
+   rescue
+    puts "Train doesn't exist!"
  end
  
  def list_stations
    puts "List of all stations:"
-   Station.list_all{|st| puts st.name }
+   stations = Station.list_all 
+   stations.each{|st| puts st.name }
  end
  
  def list_route
@@ -228,11 +251,27 @@ class Railway
  
  #методы для внутренней логики
  def station_by_name(st_name)
-   @stations.find{|st| st.name == st_name}
+   Station.list_all.find{|st| st.name == st_name}
  end
 
  def wagon_by_id(wagon_id)
    @wagons.find{|wagon| wagon.id == wagon_id}
+ end
+
+ def exist_train(train)
+  raise "Train doesn't exist" if train.nil?
+ end
+
+ def exist_wagon(wagon)
+  raise "Wagon doesn't exist" if wagon.nil?
+ end
+
+ def exist_route(route)
+  raise "Route doesn't exist" if route.nil?
+ end
+
+ def exist_station(station)
+  raise "Station doesn't exist" if station.nil?
  end
  end
  

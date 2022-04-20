@@ -8,12 +8,20 @@ class Station
     @@all_stations
   end
     
-  def initialize(name = "Station #{rand(1..1000)}")
-    @list_trains = []
-    @name = name  
+  def initialize(name)
+    @name = name
+    validate!    
+    @list_trains = []      
     @@all_stations << self
-    register_instance
+    register_instance    
   end
+
+  def valid?
+    validate!
+    true
+  rescue
+    false
+end
   
   def arrival_train(train)
     @list_trains << train
@@ -29,5 +37,11 @@ class Station
   
   def sum_trains(type)
     filter_trains(type).length
+  end
+  
+  private 
+
+  def validate!
+    raise "Station must have name" if name.empty?
   end
 end
