@@ -25,6 +25,8 @@ class Railway
      12 - List stations on the route;
      13 - List trains at the station;
      14 - List wagons of train;
+     15 - Create a wagon;
+     16 - Take space at wagon;
      exit - Exit from program"
      choice = gets.chomp
  
@@ -57,6 +59,10 @@ class Railway
        list_trains
      when "14"
        list_wagons
+     when "15"
+       create_wagon
+     when "16"
+       take_space_wagon
      when "exit"
        break
      end
@@ -95,9 +101,9 @@ class Railway
    end_station = gets.chomp   
    route = Route.new(station_by_name(first_station),station_by_name(end_station))
    @routes << route
-   rescue StandardError => e
-    puts "Error. Put real stations"
-    retry
+ rescue StandardError => e
+   puts "Error. Put real stations"
+   retry
  end
  
  def add_station
@@ -115,7 +121,7 @@ class Railway
      number_station = route.list_stations.length + 1
    end
    route.add_station(station, number_station)
-   rescue
+   rescue StandardError => e
     puts "Wrong params. Try again!"
     retry
  end
@@ -167,6 +173,7 @@ end
  def add_wagon
    puts "Put number of train"
    tr_num = gets.chomp
+   
    exist_train(Train.find_by_num(tr_num))
    puts "Put id of wagon or RAND if you want to create random wagon"
    wagon_id = gets.chomp
@@ -217,6 +224,37 @@ end
    rescue
     puts "Train doesn't exist!"
  end
+
+ def create_wagon
+   puts "Put type of wagon:"
+   type = gets.chomp
+   puts "Put id"
+   id = gets.chomp
+   puts "Put total seats or volume"
+   total = gets.chomp
+   if type == "passenger"
+    pass_wagon = PassWagon.new(id, total)
+    @wagons << pass_wagon
+   elsif type == "cargo"
+    cargo_wagon = CargoWagon.new(id, total)
+    @wagons << cargo_wagon
+   else
+    puts "Wrong type"
+   end
+ end
+
+ def take_space_wagon
+  puts "Put wagon id"
+  wagon_id = gets.chomp
+  if wagon_by_id(wagon_id).type == "cargo"
+    wagon_by_id(wagon_id).take_volume
+    puts "Successfully take 1 volume in wagon № #{wagon_id}}, free volume: #{wagon_by_id(wagon_id).free_space}"
+  else
+    wagon_by_id(wagon_id).take_seat
+    puts "Successfully take 1 place in wagon № #{wagon_id}, free places: #{wagon_by_id(wagon_id).free_space}"
+  end
+
+ end
  
  def list_stations
    puts "List of all stations:"
@@ -234,28 +272,36 @@ end
  end
  
  def list_trains
+  lam = lambda {|train| train}
    puts "Put station name"
    st_name = gets.chomp
    return puts "This station doesn't exist" unless station_by_name(st_name)
-   puts "List of trains at #{st_name}:"
-   st_trains = station_by_name(st_name).list_trains
-   st_trains.each{|train| puts "#: #{train.num}, type: #{train.type}"}
+   puts "List of trains at #{st_name}:"   
+   station_by_name(st_name).print_trains(lam).each{ |train| puts "#: #{train.num}, type: #{train.type}" }
  end
  
  def list_wagons
+   lam = lambda {|wagon| wagon}
    puts "Put train num"
    tr_num = gets.chomp
-   wagons = Train.find_by_num(tr_num).carriage
-   wagons.each{|wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}"}
+   train_type = Train.find_by_num(tr_num).type
+   train = Train.find_by_num(tr_num)
+   if train_type == "passenger"
+     train.print_wagons(lam).each{ |wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.seats}; Free: #{wagon.free_space}" }
+   else
+     train.print_wagons(lam).each{ |wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.volume}; Free: #{wagon.free_space}" }
+   end
  end
  
  #методы для внутренней логики
+ protected
+
  def station_by_name(st_name)
-   Station.list_all.find{|st| st.name == st_name}
+   Station.list_all.find { |st| st.name == st_name }
  end
 
  def wagon_by_id(wagon_id)
-   @wagons.find{|wagon| wagon.id == wagon_id}
+   @wagons.find { |wagon| wagon.id.to_i == wagon_id.to_i }
  end
 
  def exist_train(train)

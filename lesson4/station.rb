@@ -12,8 +12,8 @@ class Station
     @name = name
     validate!    
     @list_trains = []      
-    @@all_stations << self
-    register_instance    
+    @@all_stations << self    
+    register_instance 
   end
 
   def valid?
@@ -21,7 +21,7 @@ class Station
     true
   rescue
     false
-end
+  end
   
   def arrival_train(train)
     @list_trains << train
@@ -39,6 +39,12 @@ end
     filter_trains(type).length
   end
   
+  def print_trains(lam)
+    @list_trains.each do |train|
+      lam.call(train)
+    end
+  end
+
   private 
 
   def validate!
