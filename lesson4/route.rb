@@ -1,11 +1,23 @@
 class Route  
   include InstanceCounter
-  attr_reader :list_stations
+  attr_reader :list_stations, :start_station, :end_station
 
-  def initialize(start_station, end_station)   
+  def initialize(start_station, end_station)
+    @start_station = start_station
+    @end_station = end_station
+    
+    validate!   
+    
     @list_stations = [start_station, end_station] 
     register_instance
   end
+
+  def valid?
+    validate!
+    true
+  rescue
+    false
+end
 
   def add_station(station, index = -2)    
     @list_stations.insert(index - 1, station)   
@@ -27,5 +39,11 @@ class Route
   
   def index_station_for(station)
     @list_stations.index(station)
+  end
+
+  private
+
+  def validate!
+    raise "Wrong route! Let's try again!" if start_station.nil? || end_station.nil? || start_station == end_station
   end
 end

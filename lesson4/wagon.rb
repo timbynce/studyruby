@@ -9,7 +9,8 @@ class Wagon
     self.manufactured = "default corp"
   end
 end
-  
+ 
+#мне кажется, что тут валидация нагрузит код. Каждый тип отдельный и с минимальным числом атрибутов. 
   class PassWagon < Wagon
     attr_reader :seats
   
