@@ -26,7 +26,7 @@ end
     end
 
     def free_space
-      return (@seats.to_i - @taken_seats).to_i
+      (@seats - @taken_seats)
     end
   end
   
@@ -45,6 +45,6 @@ end
     end
 
     def free_space
-      return (@volume.to_i - @taken_volume.to_i)
+      (@volume - @taken_volume)
     end
   end

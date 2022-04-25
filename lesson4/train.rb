@@ -61,9 +61,9 @@ class Train
     @current_station.arrival_train(self)
   end
   
-  def print_wagons(lam)
+  def each_wagon
     @carriage.each do |wagon|
-      lam.call(wagon)
+      yield(wagon)
     end
   end
 protected

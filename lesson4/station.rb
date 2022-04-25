@@ -39,9 +39,9 @@ class Station
     filter_trains(type).length
   end
   
-  def print_trains(lam)
+  def each_train
     @list_trains.each do |train|
-      lam.call(train)
+      yield(train)
     end
   end
 

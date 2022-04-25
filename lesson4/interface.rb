@@ -231,7 +231,7 @@ end
    puts "Put id"
    id = gets.chomp
    puts "Put total seats or volume"
-   total = gets.chomp
+   total = gets.chomp.to_i
    if type == "passenger"
     pass_wagon = PassWagon.new(id, total)
     @wagons << pass_wagon
@@ -271,13 +271,13 @@ end
    stations.each_with_index {|st, index| puts "name: #{st.name}, number: #{index+1}"}
  end
  
- def list_trains
-  lam = lambda {|train| train}
+ def list_trains  
    puts "Put station name"
    st_name = gets.chomp
-   return puts "This station doesn't exist" unless station_by_name(st_name)
+   station = station_by_name(st_name)
+   return puts "This station doesn't exist" unless station
    puts "List of trains at #{st_name}:"   
-   station_by_name(st_name).print_trains(lam).each{ |train| puts "#: #{train.num}, type: #{train.type}" }
+   station.each_train { |train| puts "#{train.type}; #{train.num}" }
  end
  
  def list_wagons
@@ -287,9 +287,9 @@ end
    train_type = Train.find_by_num(tr_num).type
    train = Train.find_by_num(tr_num)
    if train_type == "passenger"
-     train.print_wagons(lam).each{ |wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.seats}; Free: #{wagon.free_space}" }
+     train.each_wagon { |wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.seats}; Free: #{wagon.free_space}" }
    else
-     train.print_wagons(lam).each{ |wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.volume}; Free: #{wagon.free_space}" }
+     train.each_wagon { |wagon| puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.volume}; Free: #{wagon.free_space}" }
    end
  end
  
