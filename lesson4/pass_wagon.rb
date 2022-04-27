@@ -1,7 +1,7 @@
 class PassWagon < Wagon
-  attr_reader :seats
+  attr_reader :seats, :type
 
-  def initialize(id = rand(1..1000), seats = 100)
+  def initialize(id, seats)
     @id = id
     @type = 'passenger'
     @seats = seats
@@ -13,6 +13,6 @@ class PassWagon < Wagon
   end
 
   def free_space
-    (@seats - @taken_seats)
+    @seats - @taken_seats
   end
 end

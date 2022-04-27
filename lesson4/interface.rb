@@ -8,16 +8,15 @@ class Railway
     @wagons = []
   end
 
-  # MENU = {
-  # "1" => create_station, "2" => create_train, "3" => create_route,
-  # "4" => add_station, "5" => remove_station, '6' => set_route,
-  # "7" => add_Wagon, "8" => remove_wagon, "9" => move_forward,
-  # "10" => move_down, "11" => list_stations, "12" => list_route,
-  # "13" => list_trains, "14" => list_wagons, "15" => create_wagon,
-  # "16" => take_space_wagon
-  # }
-
   def menu
+    options = {
+      '1' => proc { create_station }, '2' => proc { create_train }, '3' => proc { create_route }, 
+      '4' => proc { add_station}, '5' => proc { remove_station }, '6' => proc { set_route },
+      '7' => proc { add_wagon }, '8' => proc { remove_wagon }, '9' => proc { move_forward },
+      '10' => proc { move_down }, '11' => proc { list_stations }, '12' => proc { list_route },
+      '13' => proc { list_trains }, '14' => proc { list_wagons }, '15' => proc { create_wagon },
+      '16' => proc { take_space_wagon} 
+    }
     loop do
       puts 'Choose action:'
       puts "
@@ -39,43 +38,8 @@ class Railway
       16 - Take space at wagon;
       exit - Exit from program"
       choice = gets.chomp
-
-      case choice
-      when '1'
-        create_station
-      when '2'
-        create_train
-      when '3'
-        create_route
-      when '4'
-        add_station
-      when '5'
-        remove_station
-      when '6'
-        set_route
-      when '7'
-        add_wagon
-      when '8'
-        remove_wagon
-      when '9'
-        move_forward
-      when '10'
-        move_down
-      when '11'
-        list_stations
-      when '12'
-        list_route
-      when '13'
-        list_trains
-      when '14'
-        list_wagons
-      when '15'
-        create_wagon
-      when '16'
-        take_space_wagon
-      when 'exit'
-        break
-      end
+      break unless choice != 'exit'
+      options[choice].call
     end
   end
 
@@ -83,9 +47,12 @@ class Railway
     @station << Station.new
     @station << Station.new('Moscow')
     @station << Station.new('Prague')
+
     @routes << Route.new(stations[0], stations[1])
+
     @trains << PassTrain.new
     @trains << CargoTrain.new
+
     @wagons << PassWagon.new
     @wagons << PassWagon.new
     @wagons << CargoWagon.new
@@ -93,52 +60,57 @@ class Railway
 
   private
 
-  # методы, к которым не должно быть доступа пользователя
-
   def create_station
     puts 'Put the name of station:'
     name = gets.chomp
     Station.new(name)
-  rescue StandardError
-    puts 'You must type NAME of the station'
+  rescue StandardError => e
+    puts e.message
   end
 
   def create_route
     puts 'Put the name of first station'
     first_station = gets.chomp
+
     puts 'Put the name of end station'
     end_station = gets.chomp
+
     route = Route.new(station_by_name(first_station), station_by_name(end_station))
     @routes << route
   rescue StandardError => e
-    puts 'Error. Put real stations'
+    puts e.message
   end
 
   def add_station
     puts 'Put index of route'
     route_index = gets.chomp.to_i
     route = @routes[route_index]
+
     puts 'Put the number of added station'
     number_station = gets.chomp.to_i
+
     puts 'Put the Station Name'
     station_name = gets.chomp
     station = station_by_name(station_name)
+
     number_station = route.list_stations.length + 1 if number_station > route.list_stations.size
     route.add_station(station, number_station)
   rescue StandardError => e
-    puts 'Wrong params. Try again!'
+    puts e.message
   end
 
   def remove_station
     puts 'Put index of route'
     route_index = gets.chomp.to_i
     route = @routes[route_index]
+
     puts 'Put removed station name'
     station_name = gets.chomp
     station = station_by_name(station_name)
+
     route.remove_station(station)
-  rescue StandardError
-    puts 'WRONG PARAMS!'
+  rescue StandardError => e
+    puts e.message
   end
 
   def create_train
@@ -146,90 +118,104 @@ class Railway
     type = gets.chomp
     puts 'Put the number of a train:'
     number = gets.chomp
-    if type == 'passenger'
-      PassTrain.new(number)
-      puts "Train #{number} was created!"
-    elsif type == 'cargo'
-      CargoTrain.new(number)
-      puts "Train #{number} was created!"
-    else
-      puts 'Wrong train type'
+    puts 'Wrong train type' unless ['passenger','cargo'].include? type
+    
+    case type 
+    when 'passenger'
+      PassTrain.new(number)      
+    when 'cargo'
+      CargoTrain.new(number)      
     end
-  rescue StandardError
-    puts 'Wrong number format'
+
+    puts "Train #{number} was created!"
+  rescue StandardError => e
+    puts e.message
   end
 
   def set_route
     puts 'Put the train number'
     tr_num = gets.chomp
+
     puts 'Put index of route'
     route_index = gets.chomp.to_i
+
     Train.find_by_num(tr_num).set_route(@routes[route_index])
-  rescue StandardError
-    puts 'Wrong params. Try again!'
+  rescue StandardError => e
+    puts e.message
   end
 
   def add_wagon
     puts 'Put number of train'
     tr_num = gets.chomp
+    train = Train.find_by_num(tr_num)
     puts 'Put id of wagon'
     wagon_id = gets.chomp
-    Train.find_by_num(tr_num).add_carriage(wagon_by_id(wagon_id.to_i))
-  rescue StandardError
-    puts 'Wrong params. Try again!'
+    wagon = wagon_by_id(wagon_id.to_i)
+    
+    train.add_carriage(wagon)
+  rescue StandardError => e
+    puts e.message
   end
 
   def remove_wagon
     puts 'Put number of train'
     tr_num = gets.chomp
+
     puts 'Put id of wagon for remove'
     wagon_id = gets.chomp.to_i
-    Train.find_by_num(tr_num).remove_carriage(wagon_by_id(wagon_id))
-  rescue StandardError
-    puts 'Wrong params. Try again!'
+
+    wagon = wagon_by_id(wagon_id)
+    Train.find_by_num(tr_num).remove_carriage(wagon)
+  rescue StandardError => e
+    puts e.message
   end
 
   def move_forward
     puts 'Put number of train'
     tr_num = gets.chomp
     Train.find_by_num(tr_num).move_forward
-  rescue StandardError
-    puts "Train doesn't exist!"
+  rescue StandardError => e
+    puts e.message
   end
 
   def move_down
     puts 'Put number of train'
     tr_num = gets.chomp
     Train.find_by_num(tr_num).move_down
-  rescue StandardError
-    puts "Train doesn't exist!"
+  rescue StandardError => e
+    puts e.message
   end
 
   def create_wagon
     puts 'Put type of wagon:'
     type = gets.chomp
+    return 'Wrong type' unless ['cargo','passenger'].include? type
+    
     puts 'Put id'
     id = gets.chomp
+
     puts 'Put total seats or volume'
     total = gets.chomp.to_i
-    if type == 'passenger'
+
+    case type
+    when 'passenger'
       @wagons << PassWagon.new(id, total)
-    elsif type == 'cargo'
+    when 'cargo'
       @wagons << CargoWagon.new(id, total)
-    else
-      puts 'Wrong type'
     end
   end
 
   def take_space_wagon
     puts 'Put wagon id'
     wagon_id = gets.chomp
-    if wagon_by_id(wagon_id).type == 'cargo'
-      wagon_by_id(wagon_id).take_volume
-      puts "Successfully take 1 volume in wagon № #{wagon_id}}, free volume: #{wagon_by_id(wagon_id).free_space}"
+    wagon = wagon_by_id(wagon_id)
+
+    if wagon.type == 'cargo'
+      wagon.take_volume
+      puts "Successfully take 1 volume in wagon № #{wagon_id}}, free volume: #{wagon.free_space}"
     else
-      wagon_by_id(wagon_id).take_seat
-      puts "Successfully take 1 place in wagon № #{wagon_id}, free places: #{wagon_by_id(wagon_id).free_space}"
+      wagon.take_seat
+      puts "Successfully take 1 place in wagon № #{wagon_id}, free places: #{wagon.free_space}"
     end
   end
 
@@ -242,41 +228,31 @@ class Railway
   def list_route
     puts 'Put route index'
     route_index = gets.chomp.to_i
-    stations = @routes[route_index].list_stations
+    stations = @routes[route_index].list_stations    
+
     puts 'Stations of route:'
     stations.each_with_index { |st, index| puts "name: #{st.name}, number: #{index + 1}" }
-  rescue StandardError
-    puts "Route doesn't exist"
+  rescue StandardError => e
+    puts e.message
   end
 
   def list_trains
     puts 'Put station name'
     st_name = gets.chomp
     station = station_by_name(st_name)
+
     puts "List of trains at #{st_name}:"
     station.each_train { |train| puts "#{train.type}; #{train.num}" }
-  rescue StandardError
-    puts "Stations does'nt exist"
+  rescue StandardError => e
+    puts e.message
   end
 
   def list_wagons
     puts 'Put train num'
     tr_num = gets.chomp
-    train_type = Train.find_by_num(tr_num).type
     train = Train.find_by_num(tr_num)
-    if train_type == 'passenger'
-      train.each_wagon do |wagon|
-        puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.seats}; Free: #{wagon.free_space}"
-      end
-    else
-      train.each_wagon do |wagon|
-        puts "Wagon ID: #{wagon.id}; TYPE: #{wagon.type}; Total: #{wagon.volume}; Free: #{wagon.free_space}"
-      end
-    end
+    train.inspect
   end
-
-  # методы для внутренней логики
-  protected
 
   def station_by_name(st_name)
     Station.list_all.find { |st| st.name == st_name }

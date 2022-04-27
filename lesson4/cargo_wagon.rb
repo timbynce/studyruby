@@ -1,7 +1,7 @@
 class CargoWagon < Wagon
-  attr_reader :volume
+  attr_reader :volume, :type
 
-  def initialize(id = rand(1..1000), volume = 100)
+  def initialize(id, volume)
     @id = id
     @type = 'cargo'
     @volume = volume
@@ -13,6 +13,6 @@ class CargoWagon < Wagon
   end
 
   def free_space
-    (@volume - @taken_volume)
-  end
+    @volume - @taken_volume
+  end  
 end

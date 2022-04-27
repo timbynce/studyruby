@@ -1,15 +1,24 @@
 class Train
   include Manufactured
   include InstanceCounter
+
   attr_reader :speed, :carriage, :num, :route, :current_station, :next_station, :prev_station
 
   FORMAT = /[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
+
   @@all_trains = {}
+
+  def self.find_by_num(num)
+    @@all_trains[num]
+  end
+
   def initialize(num)
     @num = num
-    validate!
     @carriage = []
     @speed = 0
+
+    validate!
+
     @@all_trains[num] = self
   end
 
@@ -20,13 +29,9 @@ class Train
     false
   end
 
-  def self.find_by_num(num)
-    @@all_trains[num]
-  end
-
   def add_carriage(wagon)
-    return puts 'You most stop before change it!' unless @speed == 0
-    return puts 'Wrong type of wagon!' unless wagon.type == @type
+    return puts 'You must stop before change it!' unless @speed == 0
+    return puts 'Wrong type of wagon!' unless wagon.type == self.type
 
     @carriage << wagon
   end
@@ -44,14 +49,14 @@ class Train
     @route = route
     @current_station = route.list_stations[0]
     @current_station.arrival_train(self)
-    check_stations(@current_station)
+    update_current_station(@current_station)
   end
 
   def move_forward
     return puts "It's dead end" unless @next_station
 
     @current_station.departure_train(self)
-    check_stations(@next_station)
+    update_current_station(@next_station)
     @current_station.arrival_train(self)
   end
 
@@ -59,7 +64,7 @@ class Train
     return puts "It's dead end" unless @prev_station
 
     @current_station.departure_train(self)
-    check_stations(@prev_station)
+    update_current_station(@prev_station)
     @current_station.arrival_train(self)
   end
 
@@ -79,7 +84,7 @@ class Train
   end
 
   # метод для внутренней логики
-  def check_stations(station)
+  def update_current_station(station)
     @current_station = station
     @next_station = route.next_station_for(station)
     @prev_station = route.prev_station_for(station)
@@ -88,25 +93,5 @@ class Train
   def validate!
     raise 'Number must be 5 symbols' if num.length < 5
     raise 'Number has invalid foramt' if num !~ FORMAT
-  end
-end
-
-class PassTrain < Train
-  attr_reader :type
-
-  def initialize(num)
-    super
-    @type = 'passenger'
-    register_instance
-  end
-end
-
-class CargoTrain < Train
-  attr_reader :type
-
-  def initialize(num)
-    super
-    @type = 'cargo'
-    register_instance
   end
 end

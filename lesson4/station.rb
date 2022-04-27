@@ -10,7 +10,9 @@ class Station
 
   def initialize(name)
     @name = name
+
     validate!
+
     @list_trains = []
     @@all_stations << self
     register_instance
@@ -31,12 +33,12 @@ class Station
     @list_trains.delete(train)
   end
 
-  def filter_trains(type = nil)
+  def filter_trains(type)
     @list_trains.select { |train| train.type =~ /#{type}/ }
   end
 
-  def sum_trains(type)
-    filter_trains(type).length
+  def trains_amount(type)
+    filter_trains(type).size
   end
 
   def each_train(&block)

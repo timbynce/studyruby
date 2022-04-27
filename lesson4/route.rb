@@ -4,7 +4,7 @@ class Route
 
   def initialize(start_station, end_station)
     @start_station = start_station
-    @end_station = end_station
+    @end_station   = end_station
 
     validate!
 
@@ -20,11 +20,13 @@ class Route
   end
 
   def add_station(station, index = -2)
+    validate_station(station)
     @list_stations.insert(index - 1, station)
   end
 
   def remove_station(station)
-    return puts "Station doesn't added to this route" unless index_station_for(station) != nil
+    return unless index_station_for(station) != nil
+
     @list_stations.delete(station)
   end
 
@@ -46,6 +48,10 @@ class Route
 
   private
 
+  def validate_station(station)
+    raise "Wrong station" unless station
+  end
+  
   def validate!
     raise "Wrong route! Let's try again!" if start_station.nil? || end_station.nil? || start_station == end_station
   end
