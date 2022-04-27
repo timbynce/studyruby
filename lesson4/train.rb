@@ -61,6 +61,11 @@ class Train
     @current_station.arrival_train(self)
   end
   
+  def each_wagon
+    @carriage.each do |wagon|
+      yield(wagon)
+    end
+  end
 protected
 #по заданию пользователь не может менять скорость
   def accelerate(speed_change)
