@@ -1,16 +1,12 @@
+# frozen_string_literal: true
+
 class Train
   include Manufactured
   include InstanceCounter
 
   attr_reader :speed, :carriage, :num, :route, :current_station, :next_station, :prev_station
 
-  FORMAT = /[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/
-
-  @@all_trains = {}
-
-  def self.find_by_num(num)
-    @@all_trains[num]
-  end
+  FORMAT = /[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/.freeze
 
   def initialize(num)
     @num = num
@@ -18,8 +14,6 @@ class Train
     @speed = 0
 
     validate!
-
-    @@all_trains[num] = self
   end
 
   def valid?
@@ -30,21 +24,21 @@ class Train
   end
 
   def add_carriage(wagon)
-    return puts 'You must stop before change it!' unless @speed == 0
-    return puts 'Wrong type of wagon!' unless wagon.type == self.type
+    return puts 'You must stop before change it!' unless @speed.zero?
+    return puts 'Wrong type of wagon!' unless wagon.type == @type
 
     @carriage << wagon
   end
 
   def remove_carriage(wagon)
-    return puts 'You must stop before' unless speed == 0
+    return puts 'You must stop before' unless @speed.zero?
     return puts 'No more carriages in train' unless @carriage.length >= 1
     return puts 'This wagon is not part of this train' unless @carriage.index(wagon)
 
     @carriage.delete(wagon)
   end
 
-  def set_route(route)
+  def to_route(route)
     current_station.departure_train(self) if @current_station
     @route = route
     @current_station = route.list_stations[0]

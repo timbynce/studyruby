@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CargoWagon < Wagon
   attr_reader :volume, :type
 
@@ -14,5 +16,5 @@ class CargoWagon < Wagon
 
   def free_space
     @volume - @taken_volume
-  end  
+  end
 end

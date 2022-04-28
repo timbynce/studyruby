@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Route
   include InstanceCounter
   attr_reader :list_stations, :start_station, :end_station
@@ -25,7 +27,7 @@ class Route
   end
 
   def remove_station(station)
-    return unless index_station_for(station) != nil
+    return if index_station_for(station).nil?
 
     @list_stations.delete(station)
   end
@@ -49,9 +51,9 @@ class Route
   private
 
   def validate_station(station)
-    raise "Wrong station" unless station
+    raise 'Wrong station' unless station
   end
-  
+
   def validate!
     raise "Wrong route! Let's try again!" if start_station.nil? || end_station.nil? || start_station == end_station
   end

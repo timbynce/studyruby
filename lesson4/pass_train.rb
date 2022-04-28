@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PassTrain < Train
   attr_reader :type
 
