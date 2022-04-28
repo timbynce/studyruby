@@ -4,7 +4,8 @@ class CargoWagon < Wagon
   attr_reader :volume, :type
 
   def initialize(id, volume)
-    @id = id
+    super(id)
+    
     @type = 'cargo'
     @volume = volume
     @taken_volume = 0

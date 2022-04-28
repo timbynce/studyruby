@@ -4,7 +4,8 @@ class PassWagon < Wagon
   attr_reader :seats, :type
 
   def initialize(id, seats)
-    @id = id
+    super(id)
+    
     @type = 'passenger'
     @seats = seats
     @taken_seats = 0

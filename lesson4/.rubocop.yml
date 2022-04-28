@@ -5,11 +5,6 @@ Lint/DuplicateMethods:
   Exclude:
     - 'instancecounter.rb'
 
-Lint/MissingSuper:
-  Exclude:
-    - 'cargo_wagon.rb'
-    - 'pass_wagon.rb'
-
 # Сделал это по причине того, что в методах много Puts. Без них я бы везде уместился под требования.
 Metrics/MethodLength:
   Max: 15
