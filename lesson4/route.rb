@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
 class Route
+  include Validation
+  include Accessors
   include InstanceCounter
   attr_reader :list_stations, :start_station, :end_station
+
+  attr_accessor_with_history :description
+
+  validate :start_station, :presence
+  validate :end_station, :presence
 
   def initialize(start_station, end_station)
     @start_station = start_station
@@ -12,13 +19,6 @@ class Route
 
     @list_stations = [start_station, end_station]
     register_instance
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def add_station(station, index = -2)
@@ -52,9 +52,5 @@ class Route
 
   def validate_station(station)
     raise 'Wrong station' unless station
-  end
-
-  def validate!
-    raise "Wrong route! Let's try again!" if start_station.nil? || end_station.nil? || start_station == end_station
   end
 end

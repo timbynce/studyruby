@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 class Train
-  include Manufactured
+  include Validation
   include InstanceCounter
+  include Manufactured
 
   attr_reader :speed, :carriage, :num, :route, :current_station, :next_station, :prev_station
 
   FORMAT = /[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/.freeze
+
+  validate :num, :format, FORMAT
 
   def initialize(num)
     @num = num
@@ -82,10 +85,5 @@ class Train
     @current_station = station
     @next_station = route.next_station_for(station)
     @prev_station = route.prev_station_for(station)
-  end
-
-  def validate!
-    raise 'Number must be 5 symbols' if num.length < 5
-    raise 'Number has invalid foramt' if num !~ FORMAT
   end
 end

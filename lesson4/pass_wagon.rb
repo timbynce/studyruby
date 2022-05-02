@@ -5,7 +5,7 @@ class PassWagon < Wagon
 
   def initialize(id, seats)
     super(id)
-    
+
     @type = 'passenger'
     @seats = seats
     @taken_seats = 0

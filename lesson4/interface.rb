@@ -27,6 +27,8 @@ class Railway
   14 - List wagons of train;
   15 - Create a wagon;
   16 - Take space at wagon;
+  17 - Add description to route;
+  18 - Change stations postcode;
   exit - Exit from program'
 
   def menu
@@ -36,7 +38,8 @@ class Railway
       '7' => proc { add_wagon }, '8' => proc { remove_wagon }, '9' => proc { move_forward },
       '10' => proc { move_down }, '11' => proc { list_stations }, '12' => proc { list_route },
       '13' => proc { list_trains }, '14' => proc { list_wagons }, '15' => proc { create_wagon },
-      '16' => proc { take_space_wagon }
+      '16' => proc { take_space_wagon }, '17' => proc { route_add_description },
+      '18' => proc { station_change_postcode }
     }
     loop do
       puts MENU
@@ -221,6 +224,27 @@ class Railway
       wagon.take_seat
       puts "Successfully take 1 place in wagon № #{wagon_id}, free places: #{wagon.free_space}"
     end
+  end
+
+  def route_add_description
+    puts 'put index of route'
+    route_index = gets.chomp.to_i
+    puts 'Put description'
+    desc = gets.chomp
+    @routes[route_index].description = desc
+    puts 'History of description is:'
+    puts @routes[route_index].description_history
+  end
+
+  def station_change_postcode
+    puts 'Put Station name'
+    st_name = gets.chomp
+    station = station_by_name(st_name)
+    puts 'Put postcode'
+    postcode = gets.chomp
+    station.postcode = postcode
+  rescue StandardError => e
+    puts e.message
   end
 
   def list_stations

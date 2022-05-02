@@ -5,7 +5,7 @@ class CargoWagon < Wagon
 
   def initialize(id, volume)
     super(id)
-    
+
     @type = 'cargo'
     @volume = volume
     @taken_volume = 0

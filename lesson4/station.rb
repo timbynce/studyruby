@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 class Station
+  include Validation
+  include Accessors
   include InstanceCounter
   attr_reader :name, :list_trains
+
+  validate :name, :presence
+  validate :name, :type, String
 
   def initialize(name)
     @name = name
@@ -13,12 +18,7 @@ class Station
     register_instance
   end
 
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
-  end
+  strong_attr_accessor('postcode', 'String')
 
   def arrival_train(train)
     @list_trains << train
@@ -38,11 +38,5 @@ class Station
 
   def each_train(&block)
     @list_trains.each(&block)
-  end
-
-  private
-
-  def validate!
-    raise 'Station must have name' if name.empty?
   end
 end

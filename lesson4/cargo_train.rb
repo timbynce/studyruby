@@ -3,6 +3,10 @@
 class CargoTrain < Train
   attr_reader :type
 
+  FORMAT = /[a-zA-Z0-9]{3}-?[a-zA-Z0-9]{2}$/.freeze
+
+  validate :num, :format, FORMAT
+
   def initialize(num)
     super
 

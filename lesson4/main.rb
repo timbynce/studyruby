@@ -2,6 +2,8 @@
 
 require_relative 'instancecounter'
 require_relative 'manufactured'
+require_relative 'accessors'
+require_relative 'validate'
 require_relative 'station'
 require_relative 'wagon'
 require_relative 'cargo_wagon'
