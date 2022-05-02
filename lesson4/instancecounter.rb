@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 module InstanceCounter
- def self.included(base)
+  def self.included(base)
     base.extend ClassMethods
     base.include InstanceMethods
- end
+  end
 end
 
 module ClassMethods
   attr_accessor :instances
 
   def instances
-    @instances ||= 0 
+    @instances ||= 0
   end
 end
 

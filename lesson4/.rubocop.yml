@@ -1,0 +1,13 @@
+#AllCops:
+#  NewCops: enable
+
+Lint/DuplicateMethods:
+  Exclude:
+    - 'instancecounter.rb'
+
+# Сделал это по причине того, что в методах много Puts. Без них я бы везде уместился под требования.
+Metrics/MethodLength:
+  Max: 15
+# Это плохо, но прям совсем критичный метод такой один...
+Metrics/AbcSize:
+  Max: 50
